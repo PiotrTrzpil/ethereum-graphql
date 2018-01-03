@@ -1,5 +1,8 @@
 import { Generic, Logs, Web3, Net, Eth } from './connectors';
 import { Address, BigInt } from './scalars';
+import { PubSub, withFilter } from 'graphql-subscriptions';
+
+const pubsub = new PubSub();
 
 
 const toHex = (number) => '0x' + number.toString(16);
@@ -24,7 +27,7 @@ const resolvers = {
     }
   },
   WithBlock: {
-    call: (numberOrTag, args) => Generic.fetch('eth_call', [args, numberOrTag]),
+    call: (numberOrTag, args) => Generic.fetch('eth_call', [args.input, numberOrTag]),
     balance: (numberOrTag, args) =>  Generic.fetch('eth_getBalance', [args.address, numberOrTag]),
     code: (numberOrTag, args) =>  Generic.fetch('eth_getCode', [args.address, numberOrTag]),
     storageAt: (numberOrTag, args) => Generic.fetch('eth_getStorageAt', [args.address, args.position, numberOrTag]),
@@ -37,7 +40,7 @@ const resolvers = {
     gasPrice: () => Generic.fetch('eth_gasPrice'),
     accounts: () => Generic.fetch('eth_accounts'),
     transaction: (_, args) => Generic.fetch('eth_getTransactionByHash', [args.hash]),
-    estimateGas: (_, args) => Generic.fetch('eth_estimateGas', [args]),
+    estimateGas: (_, args) => Generic.fetch('eth_estimateGas', [args.input]),
 
     compilers: () => Generic.fetch('eth_getCompilers', []),
     compileSolidity: (_, args) => Generic.fetch('eth_compileSolidity', [args.code]),
@@ -90,6 +93,14 @@ const resolvers = {
     }
   },
 
+  Mutation: {
+    sendRawTransaction: (_, { data }) => Generic.fetch('eth_sendRawTransaction', [data])
+  },
+  Subscription: {
+    messageAdded: {
+      subscribe: () => pubsub.asyncIterator('commentAdded')
+    }
+  }
 };
 
 export default resolvers;

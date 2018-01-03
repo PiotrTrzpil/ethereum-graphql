@@ -149,13 +149,18 @@ type Log {
   removed: Boolean
 }
 
-#type Mutation {
-#    
-#}
+type Mutation {
+    sendRawTransaction(data: String!): String!
+}
+
+type Subscription {
+    messageAdded(channelId: String!): String
+}
 
 schema {
-   query: Query
-#   mutation: Mutation
+    query: Query
+    
+    mutation: Mutation
 }
 
 `;

@@ -10,6 +10,8 @@
     "express": "^4.16.2",
     "graphql": "^0.11.7",
     "graphql-tools": "^2.13.0",
+    "graphql-subscriptions": "latest",
+    "subscriptions-transport-ws": "latest",
     "lodash": "^4.17.4",
     "node-fetch": "^1.7.3",
     "sequelize": "^4.28.2"
@@ -32,5 +34,5 @@
     "url": "git+https://github.com/PiotrTrzpil/ethereum-graphql.git"
   },
   "author": "PiotrTrzpil",
-  "license": "Apache 2",
+  "license": "Apache 2"
 }
