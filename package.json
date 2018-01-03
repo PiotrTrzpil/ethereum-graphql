@@ -1,0 +1,36 @@
+{
+  "name": "ethereum-graphql",
+  "version": "1.0.0",
+  "description": "Ethereum to GraphQL bindings",
+  "main": "server.js",
+  "dependencies": {
+    "apollo-server-express": "^1.3.0",
+    "body-parser": "^1.18.2",
+    "casual": "^1.5.19",
+    "express": "^4.16.2",
+    "graphql": "^0.11.7",
+    "graphql-tools": "^2.13.0",
+    "lodash": "^4.17.4",
+    "node-fetch": "^1.7.3",
+    "sequelize": "^4.28.2",
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "nodemon": "^1.12.1"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
+  "scripts": {
+    "start": "nodemon ./server.js --exec babel-node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PiotrTrzpil/ethereum-graphql.git"
+  },
+  "author": "PiotrTrzpil",
+  "license": "Apache 2",
+}
