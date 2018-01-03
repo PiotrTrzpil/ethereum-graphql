@@ -1,7 +1,5 @@
-import { makeExecutableSchema, addMockFunctionsToSchema } from 'graphql-tools';
-//import mocks from './mocks';
+import { makeExecutableSchema} from 'graphql-tools';
 import resolvers from './resolvers';
-import {BigInt} from "./scalars";
 
 // language=GraphQL Schema
 const typeDefs = `
@@ -74,9 +72,7 @@ type Block {
   transactionCount: Int
   uncles: [String]!
 }
-#type Log {
-#
-#}
+
 type TransactionReceipt {
   cumulativeGasUsed: BigInt!
   gasUsed: BigInt!
@@ -131,8 +127,6 @@ type Eth {
     withBlock(number: Int, hash: String, tag: BlockTag): WithBlock
     estimateGas(input: EstimateGasInput): BigInt!
     compileSolidity(code: String!): CompilationOutput!
-#  
-#  
 #  transactionCount(address: String!, defaultBlock: Block!): Int!
 #  blockTransactionCountByHash(blockHash: String!): Int!
 #  blockTransactionCountByNumber(block: Block!): Int!
@@ -162,36 +156,10 @@ type Log {
 schema {
    query: Query
 #   mutation: Mutation
-#   subscription: Subscriptions
-
 }
 
 `;
-/*
 
-
-
-
-
-transactions: Array - Array of transaction objects, or 32 Bytes transaction hashes depending on the last given parameter.
-
-      "address": "0x568a0d52a173f584d4a286a22b2a876911079e15",
-			"topics": [
-				"0x986876e67d288f7b8bc5229976a1d5710be919feb66d2e1aec1bf3eadebba207",
-				"0x0000000000000000000000007a4588442b1773eb43eee96bf4fa5e994d5c54a3",
-				"0x000000000000000000000000443f9de0dc928907488197b5590abb143562a3e6"
-			],
-			"data": "0x0000000000000000000000000000000000000000000000008ac7230489e80000",
-			"blockNumber": "0x170eb9",
-			"transactionHash": "0xab6ded84e4d50c2bb9884341684bf1e4e189119f6d6df8ebff6e9164bd6e189d",
-			"transactionIndex": "0x1",
-			"blockHash": "0x1376dd2821c3ac1355a83fbc11b6a0bd8cbf3157d89fd5010218e02af0f0e3c5",
-			"logIndex": "0x1",
-			"removed": false
-
- */
 const schema = makeExecutableSchema({ typeDefs, resolvers });
-
-//addMockFunctionsToSchema({ schema, mocks });
 
 export default schema;
