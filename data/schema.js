@@ -149,18 +149,36 @@ type Log {
   removed: Boolean
 }
 
+
+type NewHead {
+    difficulty:      String!
+    extraData:       String!
+    gasLimit:        String!
+    gasUsed:         String!
+    logsBloom:       String!
+    miner:           Address!
+    nonce:           String!
+    number:          Int!
+    parentHash:      String!
+    receiptRoot:     String!
+    sha3Uncles:      String!
+    stateRoot:       String!
+    timestamp:       Int!
+    transactionsRoot:        String!
+}
+
 type Mutation {
     sendRawTransaction(data: String!): String!
 }
 
 type Subscription {
-    messageAdded(channelId: String!): String
+    newHeads: NewHead!
 }
 
 schema {
     query: Query
-    
     mutation: Mutation
+    subscription: Subscription
 }
 
 `;

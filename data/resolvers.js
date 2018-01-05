@@ -1,9 +1,8 @@
 import { Generic, Logs, Web3, Net, Eth } from './connectors';
 import { Address, BigInt } from './scalars';
 import { PubSub, withFilter } from 'graphql-subscriptions';
-
+const WebSocket = require('ws');
 const pubsub = new PubSub();
-
 
 const toHex = (number) => '0x' + number.toString(16);
 const blockNumberOrTag = (args) => args.number !== undefined ? toHex(args.number) : args.tag.toLowerCase();
@@ -97,10 +96,44 @@ const resolvers = {
     sendRawTransaction: (_, { data }) => Generic.fetch('eth_sendRawTransaction', [data])
   },
   Subscription: {
-    messageAdded: {
-      subscribe: () => pubsub.asyncIterator('commentAdded')
+    newHeads: {
+      resolve: (payload, args, context, info) => {
+        return payload;
+      },
+      subscribe: () => {
+        const id = ethSubscribe(['newHeads']);
+        return pubsub.asyncIterator('abc' + id.toString())
+      }
     }
   }
 };
+
+
+const ws = new WebSocket('ws://127.0.0.1:8546');
+
+let subscriptions = {};
+let index = 0;
+
+ws.on('open', function open() {
+
+});
+
+function ethSubscribe(params) {
+  ws.send(JSON.stringify({id: index , method: 'eth_subscribe', params}));
+  const prevIndex = index;
+  index = index + 1;
+  return prevIndex;
+}
+ws.on('message', function incoming(data) {
+
+  const json = JSON.parse(data);
+  if (json.id !== undefined) {
+    subscriptions[json.result] = json.id
+  } else {
+    pubsub.publish('abc' + subscriptions[json.params.subscription],  json.params.result);
+  }
+});
+
+
 
 export default resolvers;
