@@ -34,3 +34,7 @@ node_modules
 
 .idea/
 blog.sqlite
+
+exports.sh
+
+target/

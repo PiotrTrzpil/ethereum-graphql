@@ -1,5 +1,8 @@
 import { makeExecutableSchema} from 'graphql-tools';
-import resolvers from './resolvers';
+import Resolvers from './resolvers';
+import Configuration from "../configuration";
+import EthPubSub from "../EthPubSub";
+
 
 // language=GraphQL Schema
 const typeDefs = `
@@ -183,6 +186,15 @@ schema {
 
 `;
 
-const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+const schema = (config: Configuration) => {
+
+  let ethPubSub;
+  if (config.wsRpcUri) {
+    ethPubSub = new EthPubSub(config)
+  }
+  const resolversObj = new Resolvers(ethPubSub, config);
+  return makeExecutableSchema({ typeDefs, resolvers: resolversObj.resolvers() });
+};
 
 export default schema;
