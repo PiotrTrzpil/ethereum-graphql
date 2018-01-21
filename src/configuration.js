@@ -1,15 +1,31 @@
 // @flow
+
+import winston from 'winston'
+
 export default class Configuration {
   jsonRpcUri: string;
   wsRpcUri: ?string;
   subscriptionsEnabled: boolean;
   port: string;
+  logger: any;
 
-  constructor(port: string, jsonRpcUri: string, wsRpcUri: ?string, subscriptionsEnabled: boolean) {
+  constructor(port: string,
+              jsonRpcUri: string,
+              wsRpcUri: ?string,
+              subscriptionsEnabled: boolean,
+              logLevel: string) {
     this.subscriptionsEnabled = subscriptionsEnabled;
     this.jsonRpcUri = jsonRpcUri;
     this.port = port;
     this.wsRpcUri = wsRpcUri;
+
+    this.logger = winston.createLogger({
+      level: logLevel,
+      format: winston.format.simple(),
+      transports: [
+        new winston.transports.Console(),
+      ]
+    });
   }
 
   static fromEnv(): Configuration {
@@ -27,7 +43,11 @@ export default class Configuration {
       port = '3000'
     }
 
-    return new Configuration(port, uri, ethWsRpcUri, subscriptionsEnabled);
+    let logLevel = process.env.ETHEREUM_GRAPHQL_LOGLEVEL;
+    if (!logLevel) {
+      logLevel = 'info'
+    }
+    return new Configuration(port, uri, ethWsRpcUri, subscriptionsEnabled, logLevel);
   }
 
   toString() {

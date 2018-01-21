@@ -18,6 +18,7 @@
     "node-fetch": "^1.7.3",
     "sequelize": "^4.28.2",
     "subscriptions-transport-ws": "latest",
+    "winston": "^3.0.0-rc1",
     "ws": "^3.3.3"
   },
   "devDependencies": {
@@ -58,10 +59,13 @@
     "build": "babel src/ -d target/",
     "start-node": "npm run build && babel-node",
     "start": "nodemon --exec npm run start-node -- ./target/server.js",
-    "test": "jest"
+    "test": "jest",
+    "test-loop": "nodemon --exec \"npm test || true\" "
   },
   "nodemonConfig": {
-    "ignore": ["target/*"],
+    "ignore": [
+      "target/*"
+    ],
     "delay": "1500"
   },
   "repository": {

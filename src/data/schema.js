@@ -115,7 +115,7 @@ type CompilationOutput {
 
 
 type Eth {
-    protocolVersion: String!
+    protocolVersion: Int!
     syncing: Syncing
     coinbase: String!
     mining: Boolean!

@@ -3,23 +3,24 @@ import fetch from 'node-fetch';
 export default class Connectors {
 
   constructor(config) {
+    this.config = config;
     this.jsonRpcUri = config.jsonRpcUri;
   }
 
-  checkStatus(response) {
-    console.log('Received status: ' + response.status);
+  async checkStatus(response) {
+    const logger = this.config.logger;
+    logger.debug('Received status: ' + response.status);
     if (response.status >= 200 && response.status < 300) {
       return response
     } else {
-      return response.text().then(body => {
-        let message = response.statusText;
-        if (body !== '') {
-          message = message + '; ' + body;
-        }
-        const error = new Error(message);
-        error.response = response;
-        throw error
-      });
+      const body = await response.text();
+      let message = response.statusText;
+      if (body !== '') {
+        message = message + '; ' + body;
+      }
+      const error = new Error(message);
+      error.response = response;
+      throw error
     }
   }
 
@@ -30,21 +31,20 @@ export default class Connectors {
     return parseInt(hexString, 16)
   }
 
-  getResult(response) {
-    return response.json().then( (body) => {
-      console.log('Received body: ' + JSON.stringify(body));
-      if (body.error){
-        const error = new Error(body.error.message);
-        error.response = response;
-        error.error = body.error;
-        throw error
-      } else {
-        return body.result
-      }
-    });
+  async getResult(response) {
+    const body = await response.json();
+    this.config.logger.debug('Received body: ' + JSON.stringify(body));
+    if (body.error){
+      const error = new Error(body.error.message);
+      error.response = response;
+      error.error = body.error;
+      throw error
+    } else {
+      return body.result
+    }
   }
 
-  doFetch(method, params = [], version = '2.0') {
+  async doFetch(method, params = [], version = '2.0') {
     const body = {
       jsonrpc: version,
       method: method,
@@ -54,10 +54,10 @@ export default class Connectors {
     const headers =  {
       'Content-Type': 'application/json'
     };
-    console.log('Sending: ' + JSON.stringify(body));
-    return fetch(this.jsonRpcUri, { method: 'POST', body: JSON.stringify(body), headers })
-      .then(this.checkStatus)
-      .then(this.getResult);
+    this.config.logger.debug('Sending: ' + JSON.stringify(body));
+    const res = await fetch(this.jsonRpcUri, { method: 'POST', body: JSON.stringify(body), headers })
+    const afterStatus = await this.checkStatus(res);
+    return await this.getResult(afterStatus);
   }
 
   // Logs = {
