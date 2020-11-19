@@ -1,6 +1,6 @@
 # Ethereum GraphQL
 
-Ethereum JSON-RPC to GraphQL translation
+GraphQL schema server built from Ethereum JSON-RPC
 
 ## Trying it out
 
